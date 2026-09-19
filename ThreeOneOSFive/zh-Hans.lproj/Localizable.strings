@@ -511,3 +511,9 @@
 "wallpaper.error.install" = "安装失败，本次尝试添加的描述符已回滚。";
 "wallpaper.error.restore" = "3105 无法安全移除此安装中的全部描述符。";
 "wallpaper.error.unknown" = "发生意外错误。请查看会话日志了解详情。";
+
+"appearance.accent.neonBlue" = "Neon blue";
+"appearance.accent.neonRed" = "Neon red";
+"appearance.accent.neonGreen" = "Neon green";
+"appearance.background.neonNight" = "Neon night";
+

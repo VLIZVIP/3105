@@ -2,23 +2,38 @@ import SwiftUI
 import UIKit
 
 @main
-struct ThreeOneOSFiveApp: App {
+struct InjectIOSApp: App {
     @StateObject private var appState = AppState()
+    @StateObject private var authState = ZentryAuthState()
     @StateObject private var patchDraftCoordinator = PatchDraftCoordinator()
     @StateObject private var fileOperationCoordinator = FileOperationCoordinator()
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
+    @AppStorage(AppAppearanceKeys.font) private var fontCode = AppFontChoice.system.rawValue
+    @AppStorage(AppAppearanceKeys.background) private var backgroundCode = AppBackgroundChoice.neonNight.rawValue
     @State private var showOnboarding = OnboardingStore.shouldShow()
     @State private var showAttribution = false
     @State private var updateOffer: AppUpdateChecker.Offer?
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        if let storedLanguage = UserDefaults.standard.string(forKey: AppLanguage.storageKey),
+           AppLanguage(rawValue: storedLanguage) == nil {
+            UserDefaults.standard.set(AppLanguage.english.rawValue, forKey: AppLanguage.storageKey)
+        }
         setupLogCapture()
-        log("app: 3105 launching — iOS \(AppInfo.osVersion) (\(AppInfo.osBuild)) \(AppInfo.machineName)")
+        log("app: INJECT IOS launching — iOS \(AppInfo.osVersion) (\(AppInfo.osBuild)) \(AppInfo.machineName)")
     }
 
     private var language: AppLanguage {
         AppLanguage(rawValue: languageCode) ?? .english
+    }
+
+    private var fontChoice: AppFontChoice {
+        AppFontChoice(rawValue: fontCode) ?? .system
+    }
+
+    private var backgroundChoice: AppBackgroundChoice {
+        AppBackgroundChoice(rawValue: backgroundCode) ?? .neonNight
     }
 
     private func checkForUpdate() {
@@ -30,32 +45,46 @@ struct ThreeOneOSFiveApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                ContentView()
-                    .environmentObject(appState)
-                    .environmentObject(patchDraftCoordinator)
-                    .environmentObject(fileOperationCoordinator)
-                    .environment(\.appLanguage, language)
-                    .environment(\.locale, language.locale)
-                    .opacity(showOnboarding ? 0 : 1)
-                    .allowsHitTesting(!showOnboarding)
+            Group {
+                if authState.isAuthenticated {
+                    ZStack {
+                        ContentView()
+                            .environmentObject(appState)
+                            .environmentObject(patchDraftCoordinator)
+                            .environmentObject(fileOperationCoordinator)
+                            .environment(\.appLanguage, language)
+                            .environment(\.locale, language.locale)
+                            .opacity(showOnboarding ? 0 : 1)
+                            .allowsHitTesting(!showOnboarding)
 
-                if showOnboarding {
-                    OnboardingView {
-                        OnboardingStore.markCompleted()
-                        withAnimation(.spring(response: 0.42, dampingFraction: 0.86)) {
-                            showOnboarding = false
+                        if showOnboarding {
+                            OnboardingView {
+                                OnboardingStore.markCompleted()
+                                withAnimation(.spring(response: 0.42, dampingFraction: 0.86)) {
+                                    showOnboarding = false
+                                }
+                                appState.detectSupport()
+                                checkForUpdate()
+                            }
+                            .environment(\.appLanguage, language)
+                            .environment(\.locale, language.locale)
+                            .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                            .zIndex(1)
                         }
-                        appState.detectSupport()
-                        checkForUpdate()
                     }
-                    .environment(\.appLanguage, language)
-                    .environment(\.locale, language.locale)
-                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
-                    .zIndex(1)
+                } else {
+                    ZentryLoginView(auth: authState)
                 }
             }
-            .displayIdentityAttribution(isPresented: $showAttribution, enabled: !showOnboarding)
+            .environment(\.appLanguage, language)
+            .environment(\.locale, language.locale)
+            .font(.system(.body, design: fontChoice.design))
+            .preferredColorScheme(backgroundChoice.preferredColorScheme)
+            .tint(AppTheme.accent)
+            .displayIdentityAttribution(
+                isPresented: $showAttribution,
+                enabled: authState.isAuthenticated && !showOnboarding
+            )
             .sheet(isPresented: $showAttribution) {
                 DisplayAttributionSheet()
             }
@@ -71,17 +100,30 @@ struct ThreeOneOSFiveApp: App {
                     }
                 )
             }
-            .onAppear {
-                if !showOnboarding {
+            .task {
+                if authState.phase == .checking {
+                    await authState.restoreSession()
+                }
+            }
+            .onChange(of: authState.phase) { phase in
+                if phase == .authenticated, !showOnboarding {
                     appState.detectSupport()
                     checkForUpdate()
+                } else if phase == .locked {
+                    updateOffer = nil
+                    showAttribution = false
                 }
             }
             .onChange(of: scenePhase) { phase in
-                guard phase == .active, !showOnboarding else { return }
-                appState.detectSupport()
+                guard phase == .active else { return }
+                Task {
+                    await authState.validateForegroundSession()
+                    guard authState.isAuthenticated, !showOnboarding else { return }
+                    appState.detectSupport()
+                }
             }
             .onOpenURL { url in
+                guard authState.isAuthenticated else { return }
                 patchDraftCoordinator.presentImport(url)
             }
         }

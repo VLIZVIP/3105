@@ -6,8 +6,7 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var patchDraftCoordinator: PatchDraftCoordinator
     @State private var tabNavigation: AppTabNavigationState
-    @AppStorage(FeatureVisibility.cleanerStorageKey) private var cleanerEnabled = true
-    @AppStorage(FeatureVisibility.wallpapersStorageKey) private var wallpapersEnabled = true
+    @State private var filesUnlocked = false
 
     init() {
 #if targetEnvironment(simulator)
@@ -15,6 +14,7 @@ struct ContentView: View {
         let initialTab: Int
         if arguments.contains("--simulate-files-tab") {
             initialTab = 1
+            _filesUnlocked = State(initialValue: true)
         } else if arguments.contains("--simulate-patch-tab") {
             initialTab = 2
         } else if arguments.contains("--simulate-cleaner-tab") {
@@ -40,17 +40,17 @@ struct ContentView: View {
         }
         .tint(AppTheme.accent)
         .imageScale(.small)
+        .background(AppTheme.pageBackground.ignoresSafeArea())
+        .background(
+            ThreeFingerDoubleTapView {
+                revealFiles()
+            }
+        )
         .onChange(of: patchDraftCoordinator.request?.id) { requestID in
             if requestID != nil { tabNavigation.select(AppSection.patches.rawValue) }
         }
         .onChange(of: patchDraftCoordinator.importRequest?.id) { requestID in
             if requestID != nil { tabNavigation.select(AppSection.patches.rawValue) }
-        }
-        .onChange(of: cleanerEnabled) { _ in
-            tabNavigation.reconcileSelection(with: featureVisibility)
-        }
-        .onChange(of: wallpapersEnabled) { _ in
-            tabNavigation.reconcileSelection(with: featureVisibility)
         }
         .onAppear {
             tabNavigation.reconcileSelection(with: featureVisibility)
@@ -97,12 +97,13 @@ struct ContentView: View {
                     )
                 }
             }
-            .navigationTitle("3105")
+            .navigationTitle("INJECT IOS")
             .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 300)
         } detail: {
             sectionContent(selectedVisibleSection)
                 .id(selectedVisibleSection.rawValue)
         }
+        .background(AppTheme.pageBackground.ignoresSafeArea())
         .navigationSplitViewStyle(.balanced)
     }
 
@@ -110,11 +111,7 @@ struct ContentView: View {
     private func sectionContent(_ section: AppSection) -> some View {
         switch section {
         case .home:
-            DashboardView(
-                cleanerEnabled: $cleanerEnabled,
-                wallpapersEnabled: $wallpapersEnabled,
-                wallpapersSupported: wallpapersSupported
-            )
+            DashboardView()
         case .files:
             AppDataBrowserView(
                 tabSession: filesTabSession
@@ -143,15 +140,7 @@ struct ContentView: View {
     }
 
     private var featureVisibility: FeatureVisibility {
-        FeatureVisibility(
-            cleanerEnabled: cleanerEnabled,
-            wallpapersEnabled: wallpapersEnabled,
-            wallpapersSupported: wallpapersSupported
-        )
-    }
-
-    private var wallpapersSupported: Bool {
-        WallpaperFeatureSupportPolicy.isSupported(major: AppInfo.versionTuple.major)
+        FeatureVisibility(filesUnlocked: filesUnlocked)
     }
 
     private var selectedVisibleSection: AppSection {
@@ -160,6 +149,90 @@ struct ContentView: View {
             return .home
         }
         return section
+    }
+
+    private func revealFiles() {
+        withAnimation(.easeInOut(duration: 0.18)) {
+            filesUnlocked = true
+            tabNavigation.select(AppSection.files.rawValue)
+        }
+    }
+}
+
+private struct ThreeFingerDoubleTapView: UIViewRepresentable {
+    let onRecognized: () -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onRecognized: onRecognized)
+    }
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.isUserInteractionEnabled = false
+        view.backgroundColor = .clear
+        view.isHidden = true
+        DispatchQueue.main.async {
+            context.coordinator.installIfNeeded(from: view)
+        }
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.onRecognized = onRecognized
+        context.coordinator.installIfNeeded(from: uiView)
+    }
+
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        var onRecognized: () -> Void
+        private weak var installedWindow: UIWindow?
+        private weak var recognizer: UITapGestureRecognizer?
+
+        init(onRecognized: @escaping () -> Void) {
+            self.onRecognized = onRecognized
+        }
+
+        func installIfNeeded(from hostView: UIView) {
+            let sceneWindows = UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .flatMap(\.windows)
+            let window = hostView.window
+                ?? sceneWindows.first(where: \.isKeyWindow)
+                ?? sceneWindows.first
+
+            guard let window else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak hostView] in
+                    guard let hostView else { return }
+                    self.installIfNeeded(from: hostView)
+                }
+                return
+            }
+            guard installedWindow !== window || recognizer == nil else { return }
+
+            if let recognizer, let installedWindow {
+                installedWindow.removeGestureRecognizer(recognizer)
+            }
+
+            let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleGesture(_:)))
+            recognizer.numberOfTapsRequired = 2
+            recognizer.numberOfTouchesRequired = 3
+            recognizer.cancelsTouchesInView = false
+            recognizer.delegate = self
+            window.addGestureRecognizer(recognizer)
+            installedWindow = window
+            self.recognizer = recognizer
+        }
+
+        @objc private func handleGesture(_ gesture: UITapGestureRecognizer) {
+            guard gesture.state == .ended else { return }
+            onRecognized()
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+        ) -> Bool {
+            true
+        }
     }
 }
 
@@ -206,22 +279,55 @@ private extension AppSection {
 
 private struct DashboardView: View {
     @Environment(\.appLanguage) private var language
+    @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var appState: AppState
+    @StateObject private var announcements = CustomerAnnouncements()
+    @AppStorage("inject.announcements.lastSeen") private var lastSeenAnnouncement = ""
     @State private var showSettings = false
     @State private var showLogs = false
-    @Binding var cleanerEnabled: Bool
-    @Binding var wallpapersEnabled: Bool
-    let wallpapersSupported: Bool
+    @State private var showAnnouncements = false
 
     var body: some View {
         NavigationStack {
             List {
+                if let newest = announcements.items.first {
+                    Section("Avisos INJECT IOS") {
+                        Button {
+                            lastSeenAnnouncement = newest.id
+                            showAnnouncements = true
+                        } label: {
+                            VStack(alignment: .leading, spacing: 5) {
+                                HStack {
+                                    Text(newest.title).font(.headline)
+                                    if newest.id != lastSeenAnnouncement {
+                                        Circle().fill(AppTheme.accent).frame(width: 8, height: 8)
+                                    }
+                                }
+                                Text(newest.body).font(.subheadline).lineLimit(3)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
                 deviceSection
-                featuresSection
             }
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.pageBackground)
             .navigationBarTitleDisplayMode(.inline)
             .tint(AppTheme.accent)
             .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        if let newest = announcements.items.first {
+                            lastSeenAnnouncement = newest.id
+                        }
+                        showAnnouncements = true
+                    } label: {
+                        Image(systemName: announcements.items.first.map { $0.id != lastSeenAnnouncement } == true
+                              ? "bell.badge" : "bell")
+                    }
+                    .accessibilityLabel("Avisos INJECT IOS")
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button { showLogs = true } label: {
                         Image(systemName: "apple.terminal")
@@ -237,23 +343,35 @@ private struct DashboardView: View {
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
             .sheet(isPresented: $showLogs) { LogView() }
-        }
-    }
-
-    private var featuresSection: some View {
-        Section {
-            Toggle(isOn: $cleanerEnabled) {
-                Label(language.text("tab.cleaner"), systemImage: "sparkles")
-            }
-            if wallpapersSupported {
-                Toggle(isOn: $wallpapersEnabled) {
-                    Label(language.text("tab.wallpapers"), systemImage: "photo.on.rectangle.angled")
+            .sheet(isPresented: $showAnnouncements) {
+                NavigationStack {
+                    List(announcements.items) { item in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(item.title).font(.headline)
+                            Text(item.body).font(.body)
+                            Text(item.createdAt.prefix(10)).font(.caption).foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 6)
+                    }
+                    .overlay {
+                        if announcements.items.isEmpty {
+                            VStack(spacing: 10) {
+                                Image(systemName: "bell").font(.largeTitle)
+                                Text("Sin avisos").font(.headline)
+                            }
+                            .foregroundStyle(.secondary)
+                        }
+                    }
+                    .navigationTitle("Avisos INJECT IOS")
+                    .toolbar {
+                        Button("Cerrar") { showAnnouncements = false }
+                    }
                 }
             }
-        } header: {
-            Text(language.text("dashboard.features"))
-        } footer: {
-            Text(language.text("dashboard.features_footer"))
+            .task { await announcements.refresh() }
+            .onChange(of: scenePhase) { phase in
+                if phase == .active { Task { await announcements.refresh() } }
+            }
         }
     }
 
@@ -295,6 +413,44 @@ private struct DashboardView: View {
             Text(language.text("common.device"))
         } footer: {
             Text(language.text("settings.supported_range_summary"))
+        }
+    }
+}
+
+private struct CustomerAnnouncement: Decodable, Identifiable {
+    let id: String
+    let title: String
+    let body: String
+    let createdAt: String
+}
+
+private struct CustomerAnnouncementResponse: Decodable {
+    let announcements: [CustomerAnnouncement]
+}
+
+@MainActor
+private final class CustomerAnnouncements: ObservableObject {
+    @Published private(set) var items: [CustomerAnnouncement] = []
+
+    func refresh() async {
+        guard let raw = Bundle.main.object(forInfoDictionaryKey: "PatchCatalogBaseURL") as? String,
+              let baseURL = URL(string: raw), baseURL.scheme == "https",
+              baseURL.host != nil else { return }
+        let url = baseURL.appendingPathComponent("api/announcements")
+        do {
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+            configuration.timeoutIntervalForRequest = 15
+            let session = URLSession(configuration: configuration)
+            defer { session.invalidateAndCancel() }
+            let (data, response) = try await session.data(from: url)
+            guard let http = response as? HTTPURLResponse,
+                  (200..<300).contains(http.statusCode),
+                  http.url?.scheme == "https", http.url?.host == baseURL.host,
+                  data.count <= 256 * 1_024 else { return }
+            items = try JSONDecoder().decode(CustomerAnnouncementResponse.self, from: data).announcements
+        } catch {
+            // Keep the last loaded notices if the network is temporarily unavailable.
         }
     }
 }

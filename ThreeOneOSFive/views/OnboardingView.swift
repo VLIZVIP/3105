@@ -81,7 +81,14 @@ struct OnboardingView: View {
     private var languagePage: some View {
         VStack(spacing: 20) {
             Spacer(minLength: 12)
-            AppLogo(size: 72)
+            AnimatedBrandGIF()
+                .frame(width: 118, height: 118)
+                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28, style: .continuous)
+                        .stroke(AppTheme.accent.opacity(0.55), lineWidth: 1)
+                )
+                .shadow(color: AppTheme.accent.opacity(0.35), radius: 18)
             VStack(spacing: 8) {
                 Text(language.text("onboarding.language_title"))
                     .font(.title2.weight(.bold))
@@ -104,7 +111,7 @@ struct OnboardingView: View {
                                 Text(option.displayName)
                                     .font(.body.weight(.semibold))
                                     .foregroundStyle(.primary)
-                                Text(option.rawValue == "en" ? "English" : option.rawValue == "vi" ? "Tiếng Việt" : "简体中文")
+                                Text(option.nativeName)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -141,18 +148,14 @@ struct OnboardingView: View {
     private var welcomePage: some View {
         VStack(spacing: 18) {
             Spacer(minLength: 10)
-             ZStack {
-                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                     .fill(Color(uiColor: .secondarySystemBackground))
-                     .overlay(
-                         RoundedRectangle(cornerRadius: 10, style: .continuous)
-                             .stroke(AppTheme.accent.opacity(0.3), lineWidth: 1)
-                     )
-                     .frame(width: 72, height: 72)
-                 Image(systemName: "sparkles")
-                     .font(.system(size: 30, weight: .medium))
-                     .foregroundStyle(AppTheme.accent)
-             }
+            AnimatedBrandGIF()
+                .frame(width: 176, height: 176)
+                .clipShape(RoundedRectangle(cornerRadius: 36, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 36, style: .continuous)
+                        .stroke(AppTheme.accent.opacity(0.6), lineWidth: 1)
+                )
+                .shadow(color: AppTheme.accent.opacity(0.4), radius: 22)
             VStack(spacing: 10) {
                 Text(language.text("onboarding.welcome_title"))
                     .font(.title2.weight(.bold))

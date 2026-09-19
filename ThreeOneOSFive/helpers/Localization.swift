@@ -4,8 +4,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     static let storageKey = "appLanguage"
 
     case english = "en"
-    case vietnamese = "vi"
-    case simplifiedChinese = "zh-Hans"
+    case spanish = "es"
 
     var id: String { rawValue }
     var locale: Locale { Locale(identifier: rawValue) }
@@ -13,13 +12,21 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .english: return "English"
-        case .vietnamese: return "Tiếng Việt"
-        case .simplifiedChinese: return "简体中文"
+        case .spanish: return "Español"
         }
     }
 
+    var nativeName: String { displayName }
+
+    static var current: AppLanguage {
+        let raw = UserDefaults.standard.string(forKey: storageKey) ?? english.rawValue
+        return AppLanguage(rawValue: raw) ?? .english
+    }
+
     func text(_ key: String) -> String {
-        localizedBundle.localizedString(forKey: key, value: key, table: nil)
+        let localized = localizedBundle.localizedString(forKey: key, value: nil, table: nil)
+        if localized != key || self == .english { return localized }
+        return AppLanguage.english.localizedBundle.localizedString(forKey: key, value: key, table: nil)
     }
 
     func text(_ key: String, _ arguments: CVarArg...) -> String {

@@ -22,22 +22,7 @@ enum WallpaperFeatureSupportPolicy {
 }
 
 struct FeatureVisibility: Equatable {
-    static let cleanerStorageKey = "feature.cleaner.enabled"
-    static let wallpapersStorageKey = "feature.wallpapers.enabled"
-
-    let cleanerEnabled: Bool
-    let wallpapersEnabled: Bool
-    let wallpapersSupported: Bool
-
-    init(
-        cleanerEnabled: Bool,
-        wallpapersEnabled: Bool,
-        wallpapersSupported: Bool = true
-    ) {
-        self.cleanerEnabled = cleanerEnabled
-        self.wallpapersEnabled = wallpapersEnabled
-        self.wallpapersSupported = wallpapersSupported
-    }
+    let filesUnlocked: Bool
 
     var visibleSections: [AppSection] {
         AppSection.allCases.filter(isVisible)
@@ -45,12 +30,12 @@ struct FeatureVisibility: Equatable {
 
     func isVisible(_ section: AppSection) -> Bool {
         switch section {
-        case .cleaner:
-            return cleanerEnabled
-        case .wallpapers:
-            return wallpapersEnabled && wallpapersSupported
-        case .home, .files, .patches:
+        case .home, .patches:
             return true
+        case .files:
+            return filesUnlocked
+        case .cleaner, .wallpapers:
+            return false
         }
     }
 }

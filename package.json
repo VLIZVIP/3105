@@ -1,0 +1,19 @@
+{
+  "name": "inject-ios-patch-catalog",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Panel privado y API de parches para INJECT IOS",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js",
+    "smoke": "node server.smoke.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "5.2.1",
+    "multer": "2.2.0"
+  }
+}

@@ -44,6 +44,11 @@ final class PatchProjectStore: ObservableObject {
         items = PatchProjectLibrary.load()
     }
 
+    func adoptUnlockedItem(_ item: PatchLibraryItem) {
+        items.removeAll(where: { $0.id == item.id })
+        items.append(item)
+    }
+
     func create(project: PatchProject, password: String?) {
         runOperation(successMessageKey: "patch.created_message") {
             let encoded = try PatchPackageCodec.encodeNew(project: project, password: password)

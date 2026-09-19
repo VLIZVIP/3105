@@ -7,6 +7,7 @@ enum PatchPackageCodec {
     private static let magic = Data("3105PATCH\0".utf8)
     static let latestSchemaVersion = 2
     private static let minimumSchemaVersion = 1
+    private static let compatibleImportedSchemaVersion = 9
 
     private struct Envelope: Codable {
         let schemaVersion: Int
@@ -256,6 +257,9 @@ enum PatchPackageCodec {
             key: contentKey,
             aad: payloadAAD(for: envelope.packageID, version: envelope.schemaVersion)
         )
+        if envelope.schemaVersion == compatibleImportedSchemaVersion {
+            try validateImportedV9Payload(payloadData)
+        }
         let decoder = PropertyListDecoder()
         let payload = try decoder.decode(Payload.self, from: payloadData)
         guard payload.project.id == envelope.packageID else {
@@ -346,7 +350,8 @@ enum PatchPackageCodec {
         } catch {
             throw PatchPackageError.invalidPasswordOrCorruptedPackage
         }
-        guard (minimumSchemaVersion...latestSchemaVersion).contains(envelope.schemaVersion) else {
+        guard (minimumSchemaVersion...latestSchemaVersion).contains(envelope.schemaVersion)
+                || envelope.schemaVersion == compatibleImportedSchemaVersion else {
             throw PatchPackageError.unsupportedVersion
         }
         guard envelope.keyFingerprint.count == 32,
@@ -356,9 +361,10 @@ enum PatchPackageCodec {
         }
         if envelope.isPasswordProtected {
             guard envelope.publicContentKey == nil,
-                  (minimumSchemaVersion...latestSchemaVersion).contains(
+                  ((minimumSchemaVersion...latestSchemaVersion).contains(
                     envelope.keyAADVersion ?? envelope.schemaVersion
-                  ),
+                  ) || (envelope.schemaVersion == compatibleImportedSchemaVersion
+                    && envelope.keyAADVersion == compatibleImportedSchemaVersion)),
                   envelope.kdfSalt?.count == 16,
                   let iterations = envelope.kdfIterations,
                   iterations >= PatchPackageLimits.minimumKDFIterations,
@@ -368,7 +374,8 @@ enum PatchPackageCodec {
                 throw PatchPackageError.invalidPasswordOrCorruptedPackage
             }
         } else {
-            guard envelope.kdfSalt == nil,
+            guard envelope.schemaVersion != compatibleImportedSchemaVersion,
+                  envelope.kdfSalt == nil,
                   envelope.kdfIterations == nil,
                   envelope.wrappedContentKey == nil,
                   envelope.publicContentKey?.count == 32
@@ -386,6 +393,48 @@ enum PatchPackageCodec {
         var result = magic
         result.append(body)
         return result
+    }
+
+    // Format 9 contains fields the legacy project model does not represent.
+    // Only import the documented subset, and reject anything that would be
+    // silently dropped by Codable before a project can be installed or applied.
+    private static func validateImportedV9Payload(_ data: Data) throws {
+        guard let payload = try PropertyListSerialization.propertyList(from: data, format: nil)
+                as? [String: Any],
+              Set(payload.keys) == ["project", "replacementDigests"],
+              let project = payload["project"] as? [String: Any],
+              let rules = project["rules"] as? [[String: Any]],
+              let directories = project["directories"] as? [[String: Any]],
+              !rules.isEmpty,
+              Set(project.keys).subtracting([
+                "id", "name", "createdAt", "updatedAt", "bundleIdentifiers",
+                "directories", "rules", "author", "isPrivate",
+                "appGroupIdentifiers", "systemAppGroupIdentifiers", "settings"
+              ]).isEmpty else {
+            throw PatchPackageError.unsupportedVersion
+        }
+        for field in ["appGroupIdentifiers", "systemAppGroupIdentifiers", "settings"] {
+            if let value = project[field] {
+                guard let array = value as? [Any], array.isEmpty else {
+                    throw PatchPackageError.unsupportedVersion
+                }
+            }
+        }
+        for rule in rules {
+            guard Set(rule.keys) == [
+                "id", "containerKind", "bundleID", "relativePath", "operation",
+                "replacementFilename", "replacementData"
+            ], rule["containerKind"] as? String == "application",
+                  rule["operation"] as? String == "replace" else {
+                throw PatchPackageError.unsupportedVersion
+            }
+        }
+        for directory in directories {
+            guard Set(directory.keys) == ["id", "containerKind", "bundleID", "relativePath"],
+                  directory["containerKind"] as? String == "application" else {
+                throw PatchPackageError.unsupportedVersion
+            }
+        }
     }
 
     private static func seal(_ plaintext: Data, key: Data, aad: Data) throws -> Data {

@@ -122,7 +122,7 @@ enum PatchProjectLibrary {
         summary: PatchPackageSummary,
         existingURL: URL?,
         fileManager: FileManager = .default
-    ) throws {
+    ) throws -> URL {
         let previousData = try existingURL.map { try readPackage(at: $0) }
         var savedURL: URL?
         do {
@@ -143,6 +143,8 @@ enum PatchProjectLibrary {
                     fileManager: fileManager
                 )
             }
+            guard let savedURL else { throw PatchPackageError.invalidProject }
+            return savedURL
         } catch {
             if let previousData, let existingURL {
                 try? previousData.write(

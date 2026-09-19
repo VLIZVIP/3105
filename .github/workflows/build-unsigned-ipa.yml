@@ -1,0 +1,64 @@
+name: Build unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - inject-ios-build
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build INJECT IOS with ZentryAuth
+    runs-on: macos-26
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 26.2
+        run: sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+
+      - name: Build unsigned application
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project ThreeOneOSFive.xcodeproj \
+            -target 3105 \
+            -configuration Release \
+            -sdk iphoneos \
+            SYMROOT="$RUNNER_TEMP/Build" \
+            OBJROOT="$RUNNER_TEMP/Intermediates" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            DEVELOPMENT_TEAM="" \
+            clean build
+
+      - name: Package IPA
+        run: |
+          set -euo pipefail
+          APP_PATH="$RUNNER_TEMP/Build/Release-iphoneos/3105.app"
+          test -d "$APP_PATH"
+          mkdir -p "$RUNNER_TEMP/ipa/Payload"
+          ditto "$APP_PATH" "$RUNNER_TEMP/ipa/Payload/3105.app"
+          cd "$RUNNER_TEMP/ipa"
+          ditto -c -k --sequesterRsrc --keepParent Payload INJECT-IOS-unsigned.ipa
+          shasum -a 256 INJECT-IOS-unsigned.ipa | tee INJECT-IOS-unsigned.ipa.sha256
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: INJECT-IOS-unsigned
+          path: |
+            ${{ runner.temp }}/ipa/INJECT-IOS-unsigned.ipa
+            ${{ runner.temp }}/ipa/INJECT-IOS-unsigned.ipa.sha256
+          if-no-files-found: error
+          retention-days: 7

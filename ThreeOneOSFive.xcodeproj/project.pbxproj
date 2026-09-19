@@ -68,6 +68,10 @@
 		3105A234 /* AppDataBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105A105; };
 		3105A228 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3105A120; };
 		3105A211 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3105A031; };
+		3105K200 /* ZentryDeviceIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105K100; };
+		3105K201 /* ZentrySessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105K101; };
+		3105K202 /* ZentryAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105K102; };
+		3105K203 /* ZentryLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105K103; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -148,8 +152,11 @@
 		3105I100 /* FilesTabControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesTabControls.swift; sourceTree = "<group>"; };
 		3105I101 /* FilesTabSwitcherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesTabSwitcherView.swift; sourceTree = "<group>"; };
 		3105A121 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3105A122 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3105B123 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		3105C123 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3105K100 /* ZentryDeviceIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZentryDeviceIdentity.swift; sourceTree = "<group>"; };
+		3105K101 /* ZentrySessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZentrySessionStore.swift; sourceTree = "<group>"; };
+		3105K102 /* ZentryAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZentryAuth.swift; sourceTree = "<group>"; };
+		3105K103 /* ZentryLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZentryLoginView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +232,7 @@
 				3105E101 /* CleanerView.swift */,
 				3105F106 /* WallpaperLabView.swift */,
 				3105F108 /* OnboardingView.swift */,
+				3105K103 /* ZentryLoginView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -233,6 +241,9 @@
 			isa = PBXGroup;
 			children = (
 				3105A099 /* Localization.swift */,
+				3105K100 /* ZentryDeviceIdentity.swift */,
+				3105K101 /* ZentrySessionStore.swift */,
+				3105K102 /* ZentryAuth.swift */,
 				3105A104 /* ContainerStore.swift */,
 				3105A108 /* ContainerIdentityResolver.swift */,
 				3105A109 /* ContainerBrowserLogic.swift */,
@@ -330,8 +341,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				vi,
-				"zh-Hans",
+				es,
 				Base,
 			);
 			mainGroup = 3105A400;
@@ -409,6 +419,10 @@
 				3105H200,
 				3105I200,
 				3105I201,
+				3105K200,
+				3105K201,
+				3105K202,
+				3105K203,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,8 +433,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				3105A121 /* en */,
-				3105A122 /* vi */,
-				3105B123 /* zh-Hans */,
+				3105C123 /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -440,7 +453,8 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThreeOneOSFive/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = 3105;
+				INFOPLIST_KEY_CFBundleDisplayName = "INJECT IOS";
+				INFOPLIST_KEY_CFBundleName = "INJECT IOS";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -459,6 +473,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "ThreeOneOSFive/ThreeOneOSFive-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				ZENTRY_APP_KEY = 0xr3bicryoqn7ujap4fdqacqmmrqvjkf;
 			};
 			name = Debug;
 		};
@@ -474,7 +489,8 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ThreeOneOSFive/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = 3105;
+				INFOPLIST_KEY_CFBundleDisplayName = "INJECT IOS";
+				INFOPLIST_KEY_CFBundleName = "INJECT IOS";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -493,6 +509,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "ThreeOneOSFive/ThreeOneOSFive-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				ZENTRY_APP_KEY = 0xr3bicryoqn7ujap4fdqacqmmrqvjkf;
 			};
 			name = Release;
 		};
