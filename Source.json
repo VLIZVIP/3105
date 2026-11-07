@@ -1,0 +1,35 @@
+{
+  "version": "1.1.2",
+  "sourceName": "VLIZ Apps",
+  "sourceAuthor": "VLIZVIP",
+  "sourceLinkTitle": "Repositorio",
+  "sourceLinkUrl": "https://github.com/VLIZVIP/3105/tree/gbox-source",
+  "sourceImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
+  "sourceUpdateTime": "2026-11-07T12:00:00-0400",
+  "sourceDescription": "Catálogo de aplicaciones VLIZ para iPhone.",
+  "appCategories": [
+    "Utilidades"
+  ],
+  "appRepositories": [
+    {
+      "appType": "SELF_SIGN",
+      "appCateIndex": 0,
+      "appUpdateTime": "2026-11-07T12:00:00-0400",
+      "appName": "VLIZ VIP",
+      "appVersion": "1.1.1",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ_VIP_IOS.ipa",
+      "appDescription": "Gestor de paquetes y archivos. Consulta la compatibilidad de 3105 antes de instalar."
+    },
+    {
+      "appType": "SELF_SIGN",
+      "appCateIndex": 0,
+      "appUpdateTime": "2026-11-07T12:00:00-0400",
+      "appName": "VLIZ Lector",
+      "appVersion": "1.0.0",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ-Lector-unsigned.ipa",
+      "appDescription": "Abre y valida paquetes compatibles de formato 9."
+    }
+  ]
+}
