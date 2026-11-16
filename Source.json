@@ -1,11 +1,11 @@
 {
-  "version": "1.1.2",
+  "version": "1.1.3",
   "sourceName": "VLIZ Apps",
   "sourceAuthor": "VLIZVIP",
   "sourceLinkTitle": "Repositorio",
   "sourceLinkUrl": "https://github.com/VLIZVIP/3105/tree/gbox-source",
   "sourceImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
-  "sourceUpdateTime": "2026-11-07T12:41:35-0400",
+  "sourceUpdateTime": "2026-11-16T12:02:13-04:00",
   "sourceDescription": "Catálogo de aplicaciones VLIZ para iPhone.",
   "appCategories": [
     "Utilidades"
@@ -40,6 +40,16 @@
       "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
       "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ_VIP_IOS.ipa",
       "appDescription": "VLIZ VIP para iPhone. Requiere firma antes de instalar."
+    },
+    {
+      "appType": "SELF_SIGN",
+      "appCateIndex": 0,
+      "appUpdateTime": "2026-11-16T12:02:13-04:00",
+      "appName": "VLIZ VIP — PRUEBA 3106",
+      "appVersion": "3.2.5",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ-VIP-3106-test-unsigned.ipa",
+      "appDescription": "Versión de PRUEBA basada en 3106 (build 24), con login Zentry y catálogo de parches VLIZ VIP. Compilada; pendiente de validar en iPhone. Sin firmar: iOS 26.7+/27.x requiere App Group válido. Comparte identificador con VLIZ VIP y puede reemplazar la instalación existente; conserva una copia de tus parches."
     }
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "build": "success",
+  "run": "https://github.com/VLIZVIP/3105-zentry-ios/actions/runs/43901819895",
+  "source_commit": "5480dc3511c576934b83196a61eff4357188f0c5",
+  "checks": {
+    "CFBundleIdentifier": true,
+    "CFBundleDisplayName": true,
+    "ZentryAppKey": true,
+    "PatchCatalogBaseURL": true,
+    "zip_integrity": true,
+    "arm64_macho": true,
+    "login_symbols_present": true,
+    "spanish_resources": true,
+    "version_3_2_5": true,
+    "sha256_matches_build": true
+  },
+  "ipa_sha256": "02ec457e78e27c519aa4e1d546bcbdbaac155bf49c2f28e61775208cf05800c2",
+  "reference_sha256": "3f4072f3ca0c77cb6b23004ff493c4773f84c7d450028be1e540e568f9bff83c",
+  "version": "3.2.5",
+  "build_number": "24",
+  "device_test": "pending",
+  "signed": false
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+      worse_query needs an App Group. The name is a placeholder: the signing
+      tool (AltStore/SideStore/Sideloadly with a free Apple ID) creates its own
+      group and re-signs the app; the app reads whichever group it receives at
+      runtime via SecTaskCopyValueForEntitlement. A wildcard provisioning
+      profile cannot carry this entitlement.
+    -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.com.qingtang.3106</string>
+    </array>
+</dict>
+</plist>
