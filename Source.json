@@ -1,11 +1,11 @@
 {
-  "version": "1.1.4",
+  "version": "1.1.5",
   "sourceName": "VLIZ Apps",
   "sourceAuthor": "VLIZVIP",
   "sourceLinkTitle": "Repositorio",
   "sourceLinkUrl": "https://github.com/VLIZVIP/3105/tree/gbox-source",
-  "sourceImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png",
-  "sourceUpdateTime": "2026-11-16T23:27:06-04:00",
+  "sourceImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png?v=20261117152859",
+  "sourceUpdateTime": "2026-11-17T15:28:59-04:00",
   "sourceDescription": "Catálogo de aplicaciones VLIZ para iPhone.",
   "appCategories": [
     "Utilidades"
@@ -14,32 +14,42 @@
     {
       "appType": "SELF_SIGN",
       "appCateIndex": 0,
-      "appUpdateTime": "2026-11-07T12:41:35-0400",
+      "appUpdateTime": "2026-11-17T15:28:59-04:00",
       "appName": "MANGO XIT",
-      "appVersion": "1.1.1",
-      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/mango.png",
-      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/MANGO-XIT-unsigned.ipa",
+      "appVersion": "3.2.5",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/mango.png?v=20261117152859",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/MANGO-XIT-unsigned.ipa?v=20261117152859",
       "appDescription": "MANGO XIT para iPhone. Requiere firma antes de instalar."
     },
     {
       "appType": "SELF_SIGN",
       "appCateIndex": 0,
-      "appUpdateTime": "2026-11-07T12:41:35-0400",
+      "appUpdateTime": "2026-11-17T15:28:59-04:00",
       "appName": "INJECT IOS",
-      "appVersion": "1.1.1",
-      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/inject.png",
-      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/INJECT-IOS-unsigned.ipa",
+      "appVersion": "3.2.5",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/inject.png?v=20261117152859",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/INJECT-IOS-unsigned.ipa?v=20261117152859",
       "appDescription": "INJECT IOS para iPhone. Requiere firma antes de instalar."
     },
     {
       "appType": "SELF_SIGN",
       "appCateIndex": 0,
-      "appUpdateTime": "2026-11-07T12:00:00-0400",
+      "appUpdateTime": "2026-11-17T15:28:59-04:00",
       "appName": "VLIZ VIP",
-      "appVersion": "1.1.1",
-      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png",
-      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ_VIP_IOS.ipa",
+      "appVersion": "3.2.5",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png?v=20261117152859",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ_VIP_IOS.ipa?v=20261117152859",
       "appDescription": "VLIZ VIP para iPhone. Requiere firma antes de instalar."
+    },
+    {
+      "appType": "SELF_SIGN",
+      "appCateIndex": 0,
+      "appName": "EXT",
+      "appVersion": "3.2.5",
+      "appUpdateTime": "2026-11-17T15:28:59-04:00",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/ext.png?v=20261117152859",
+      "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/EXT-unsigned.ipa?v=20261117152859",
+      "appDescription": "EXT para iPhone. Requiere firma antes de instalar."
     }
   ]
 }
