@@ -4,8 +4,8 @@
   "sourceAuthor": "VLIZVIP",
   "sourceLinkTitle": "Repositorio",
   "sourceLinkUrl": "https://github.com/VLIZVIP/3105/tree/gbox-source",
-  "sourceImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
-  "sourceUpdateTime": "2026-11-16T16:43:23-04:00",
+  "sourceImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png",
+  "sourceUpdateTime": "2026-11-16T23:27:06-04:00",
   "sourceDescription": "Catálogo de aplicaciones VLIZ para iPhone.",
   "appCategories": [
     "Utilidades"
@@ -37,7 +37,7 @@
       "appUpdateTime": "2026-11-07T12:00:00-0400",
       "appName": "VLIZ VIP",
       "appVersion": "1.1.1",
-      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz.png",
+      "appImage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png",
       "appPackage": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ_VIP_IOS.ipa",
       "appDescription": "VLIZ VIP para iPhone. Requiere firma antes de instalar."
     }
