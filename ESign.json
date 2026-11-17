@@ -1,0 +1,66 @@
+{
+  "name": "VLIZ Apps",
+  "identifier": "com.vlizvip.esign",
+  "sourceURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/ESign.json",
+  "iconURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png?v=20261117152859",
+  "description": "Catálogo de aplicaciones VLIZ para iPhone.",
+  "apps": [
+    {
+      "name": "MANGO XIT",
+      "bundleIdentifier": "com.apple.mobile.MobileHouseArrest",
+      "developerName": "VLIZVIP",
+      "version": "3.2.5",
+      "versionDate": "2026-11-17",
+      "versionDescription": "Versión personalizada 3.2.5 (build 27).",
+      "downloadURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/MANGO-XIT-unsigned.ipa?v=20261117152859",
+      "localizedDescription": "MANGO XIT para iPhone. Requiere firma antes de instalar.",
+      "iconURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/mango.png?v=20261117152859",
+      "size": 12571367,
+      "sha256": "9193ebeff1eb31ae6f51c52cf2fddd5a0c1040f7d7885600e505900c652639cf",
+      "minOSVersion": "16.0"
+    },
+    {
+      "name": "INJECT IOS",
+      "bundleIdentifier": "com.apple.mobile.MobileHouseArrest",
+      "developerName": "VLIZVIP",
+      "version": "3.2.5",
+      "versionDate": "2026-11-17",
+      "versionDescription": "Versión personalizada 3.2.5 (build 27).",
+      "downloadURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/INJECT-IOS-unsigned.ipa?v=20261117152859",
+      "localizedDescription": "INJECT IOS para iPhone. Requiere firma antes de instalar.",
+      "iconURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/inject.png?v=20261117152859",
+      "size": 13271475,
+      "sha256": "8e669ff977a1ebf0f09cb8c69233a242ebba9ce3b5bb8b79b3805b917e7b04bd",
+      "minOSVersion": "16.0"
+    },
+    {
+      "name": "VLIZ VIP",
+      "bundleIdentifier": "com.apple.mobile.MobileHouseArrest",
+      "developerName": "VLIZVIP",
+      "version": "3.2.5",
+      "versionDate": "2026-11-17",
+      "versionDescription": "Versión personalizada 3.2.5 (build 27).",
+      "downloadURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/VLIZ_VIP_IOS.ipa?v=20261117152859",
+      "localizedDescription": "VLIZ VIP para iPhone. Requiere firma antes de instalar.",
+      "iconURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/vliz-gold.png?v=20261117152859",
+      "size": 16122787,
+      "sha256": "5c46e7453b9dcf1c0ca15199a279981828992f64ee139b7f4f9734f8a9fa89f2",
+      "minOSVersion": "16.0"
+    },
+    {
+      "name": "EXT",
+      "bundleIdentifier": "com.apple.mobile.MobileHouseArrest",
+      "developerName": "VLIZVIP",
+      "version": "3.2.5",
+      "versionDate": "2026-11-17",
+      "versionDescription": "Versión personalizada 3.2.5 (build 27).",
+      "downloadURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/apps/EXT-unsigned.ipa?v=20261117152859",
+      "localizedDescription": "EXT para iPhone. Requiere firma antes de instalar.",
+      "iconURL": "https://raw.githubusercontent.com/VLIZVIP/3105/gbox-source/icons/ext.png?v=20261117152859",
+      "size": 13551940,
+      "sha256": "dc922cde8d1295cee0e09d07092fac5b5f5abd889f22793a13bf33c6fd7ad817",
+      "minOSVersion": "16.0"
+    }
+  ],
+  "news": []
+}
